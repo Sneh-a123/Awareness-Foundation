@@ -2,12 +2,20 @@
 .slider {
     position: relative;
     height: 100vh;
+    overflow: hidden;
+    background-image: url("https://s3-us-west-2.amazonaws.com/s.cdpn.io/142996/onepgscr-2.jpg");
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    will-change: opacity, clip-path;
+    backface-visibility: hidden;
   }
+
   .slider__slides {
-    z-index: 1;
     position: relative;
     height: 100%;
     overflow: hidden;
+   
   }
   .slider__control {
     z-index: 2;
@@ -93,10 +101,7 @@
     }
   }
   
-  .slide.s--prev {
-    -webkit-clip-path: circle(30px at 30vw 50%);
-            clip-path: circle(30px at 30vw 50%);
-  }
+  
   .slide.s--active {
     z-index: 1;
     transition: -webkit-clip-path 1.3s;
@@ -181,28 +186,32 @@
     height: 150vmax;
     transform: translate(-50%, -50%);
     border-radius: 50%;
-    transition: opacity 0.8s ease-in-out, clip-path 1.3s ease-in-out;
+    transition: opacity 0.8s ease-in-out, clip-path 1s ease-in-out;
     -webkit-clip-path: circle(30px at 120vw 50%);
     clip-path: circle(30px at 120vw 50%);
     opacity: 0;
-    will-change: clip-path, opacity, transform;
-    background-color: #000;
-    
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    will-change: opacity, clip-path;
+    backface-visibility: hidden;
 }
 
 
 .slide.s--active {
-    opacity: 1;
-    -webkit-clip-path: circle(120vmax at 50% 50%);
-    clip-path: circle(120vmax at 50% 50%);
+  z-index: 2;
+  opacity: 1;
+  -webkit-clip-path: circle(120vmax at 50% 50%);
+  clip-path: circle(120vmax at 50% 50%);
 }
 
 
 /* Previous Slide - Small Circle */
 .slide.s--prev {
-    z-index: 1;
-     -webkit-clip-path: circle(40px at 30vw 50%);
-    clip-path: circle(40px at 30vw 50%);
+  z-index: 1;
+  opacity: 0.8;
+  -webkit-clip-path: circle(30px at 30vw 50%);
+  clip-path: circle(30px at 30vw 50%);
 }
 
 

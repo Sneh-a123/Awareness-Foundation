@@ -56,43 +56,40 @@ mainImg.attr('src', mainImgSrc);
 
 
 // 1. revolution slider
-function revolutionSliderActiver() {
-    if ($('.rev_slider_wrapper #slider1').length) {
-        jQuery("#slider1").revolution({
-            sliderType: "standard",
-            sliderLayout: "auto",
-            delay: 5000,
-            navigation: {
-                arrows: { enable: true }
-            },
-            gridwidth: 1170,
-            gridheight: 1000
-        });
-    };
-    if ($('.rev_slider_wrapper #slider2').length) {
-        var height = $("#slider2").data('height');
-        var sDelay = $("#slider2").data('delay');
-        if (!height) {
-            height = 825;
-        };
-        if (!sDelay) {
-            sDelay = 2000;
-        };
+(function($) {
+    function revolutionSliderActiver() {
+        if ($('.rev_slider_wrapper #slider1').length) {
+            $("#slider1").revolution({
+                sliderType: "standard",
+                sliderLayout: "auto",
+                delay: 5000,
+                navigation: {
+                    arrows: { enable: true }
+                },
+                gridwidth: 1170,
+                gridheight: 1000
+            });
+        }
+        if ($('.rev_slider_wrapper #slider2').length) {
+            var height = $("#slider2").data('height') || 825;
+            var sDelay = $("#slider2").data('delay') || 2000;
 
-        $("#slider2").revolution({
-            sliderType: "standard",
-            sliderLayout: "auto",
-            delay: sDelay,
-            navigation: {
-                arrows: { enable: true }
-            },
-            responsiveLevels:[2020,1183,975,751,484],
-            gridwidth:[1170,970,750,500,450],
-            // gridwidth: 1170,
-            gridheight: [height, 600, 400, 400, 400]
-        });
-    };
-}
+            $("#slider2").revolution({
+                sliderType: "standard",
+                sliderLayout: "auto",
+                delay: sDelay,
+                navigation: {
+                    arrows: { enable: true }
+                },
+                responsiveLevels:[2020,1183,975,751,484],
+                gridwidth:[1170,970,750,500,450],
+                gridheight: [height, 600, 400, 400, 400]
+            });
+        }
+    }
+    $(document).ready(revolutionSliderActiver);
+})(jQuery);
+
 
 
 
@@ -1221,76 +1218,77 @@ jQuery(window).on('scroll', function() {
     var numOfSlides = $slides.length;
     var slidingAT = 1300; // sync this with scss variable
     var slidingBlocked = false;
-    var autoSlideInterval = 2000; // Auto-slide every 3 seconds
+    var autoSlideInterval = 2000; // Auto-slide every 2 seconds
     var autoSlideTimer;
-  
+
     // Assign slide numbers and dataset
     [].slice.call($slides).forEach(function($el, index) {
       var i = index + 1;
       $el.classList.add('slide-' + i);
       $el.dataset.slide = i;
     });
-  
+
     // Add click event to controls
     [].slice.call($controls).forEach(function($el) {
       $el.addEventListener('click', controlClickHandler);
     });
-  
+
     function controlClickHandler(isAuto = false) {
-      if (slidingBlocked) return;
-      slidingBlocked = true;
-  
-      var $curActive = document.querySelector('.slide.s--active');
-      var index = +$curActive.dataset.slide;
-  
-      // Check direction: Right for auto-slide or manual right click
-      var isRight = isAuto || this.classList.contains('m--right');
-      isRight ? index++ : index--;
-      if (index < 1) index = numOfSlides;
-      if (index > numOfSlides) index = 1;
-  
-      var $newActive = document.querySelector('.slide-' + index);
-  
-      if (!isAuto) {
-        this.classList.add('a--rotation');
-      }
-  
-      $curActive.classList.remove('s--active', 's--active-prev');
-      document.querySelector('.slide.s--prev').classList.remove('s--prev');
-  
-      $newActive.classList.add('s--active');
-      if (!isRight) $newActive.classList.add('s--active-prev');
-  
-      var prevIndex = index - 1;
-      if (prevIndex < 1) prevIndex = numOfSlides;
-      document.querySelector('.slide-' + prevIndex).classList.add('s--prev');
-  
-      setTimeout(function() {
+        if (slidingBlocked) return;
+        slidingBlocked = true;
+    
+        var $curActive = document.querySelector('.slide.s--active');
+        var index = +$curActive.dataset.slide;
+    
+        var isRight = isAuto || this.classList.contains('m--right');
+        isRight ? index++ : index--;
+        if (index < 1) index = numOfSlides;
+        if (index > numOfSlides) index = 1;
+    
+        var $newActive = document.querySelector('.slide-' + index);
+    
         if (!isAuto) {
-          $controls.forEach(function($el) {
-            $el.classList.remove('a--rotation');
-          });
+            this.classList.add('a--rotation');
         }
-        slidingBlocked = false;
-      }, slidingAT * 0.75);
+    
+        $curActive.classList.remove('s--active', 's--active-prev');
+        document.querySelectorAll('.slide').forEach(slide => slide.classList.remove('s--prev'));
+
+        $newActive.classList.add('s--active');
+        if (!isRight) $newActive.classList.add('s--active-prev');
+
+        // ✅ FIX: First Slide Transition without White Screen  
+        if (index === 1 && isRight) {
+            setTimeout(() => {
+                document.querySelectorAll('.slide').forEach(slide => slide.classList.remove('s--prev'));
+                document.querySelector('.slide-' + (numOfSlides)).classList.add('s--prev');
+            }, 50); // Minimal delay for smooth effect
+        }
+
+        setTimeout(function () {
+            slidingBlocked = false;
+        }, slidingAT * 0.75);
     }
-  
+
     // Auto-slide functionality
     function startAutoSlide() {
       autoSlideTimer = setInterval(function() {
         controlClickHandler(true);
       }, autoSlideInterval);
     }
-  
+
     function stopAutoSlide() {
       clearInterval(autoSlideTimer);
     }
-  
+
     // Start auto-slide on page load
     startAutoSlide();
-  
+
     // Optional: Pause auto-slide on mouse hover for manual control
     document.querySelector('.slider').addEventListener('mouseenter', stopAutoSlide);
     document.querySelector('.slider').addEventListener('mouseleave', startAutoSlide);
-  })();
+})();
+
+
+  
   
